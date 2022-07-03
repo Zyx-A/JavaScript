@@ -1,8 +1,6 @@
 /**
  * 请勿烂分享脚本
- 
- * 脚本地址 https://raw.githubusercontent.com/kristallsi/JavaScript/main/QQread.js
- 
+ * 
  * 请填写我的邀请码 937240599 (你的支持就是我最大的动力)
  
  * QQ阅读app  
@@ -63,6 +61,8 @@ async function start() {
         await $.wait(3 * 1000);
         await pickLottery();
         await punchCardWatchVideo();
+        console.log("\n ==============加入书架==============");
+        await addBookShelfWatchVideo();
         } else {
         console.log("\n 时间不对 跳过！")
         msg += `\n 时间不对 跳过！`;
@@ -90,6 +90,10 @@ async function start() {
         console.log("\n时间不对 跳过！")
         msg += `\n 时间不对 跳过！`;
         }
+        
+        console.log("\n ===========刷视频随机奖励===========");
+        console.log("\n 每运行一次刷一个 每天最多20次");
+        await watchVideo();
     }
 
 
@@ -252,6 +256,50 @@ async function readBookWatchVideo() {
     } else if (result.code == 0) {
         console.log(`\n每日阅读：获得${result.data.count}金币`);
         msg += `\n 每日阅读：获得${result.data.count}金币`;
+    }
+}
+
+/**
+ * 刷视频    GET
+ */
+async function watchVideo() {
+    let options = {
+        method: 'GET',
+        url: `${hostname}/activity/pkg11955/watchVideo`,
+        headers: {
+            Host: host,
+            'cookie': `${ck[0]}`
+        },
+      //  body: JSON.stringify({})
+    };
+    let result = await httpRequest(options, `刷视频`);
+
+    if (result.code == -19) {
+        console.log(`\n 刷视频：${result.msg}`);
+        msg += `\n 刷视频：${result.msg}`;
+    } else if (result.code == 0) {
+        console.log(`\n 刷视频：获得${result.data.watchVideoCoin}金币`);
+        msg += `\n 刷视频：获得${result.data.watchVideoCoin}金币`;
+    }
+}
+async function addBookShelfWatchVideo() {
+    let options = {
+        method: 'GET',
+        url: `${hostname}/activity/pkg11955/addBookShelfWatchVideo`,
+        headers: {
+            Host: host,
+            'cookie': `${ck[0]}`
+        },
+      //  body: JSON.stringify({})
+    };
+    let result = await httpRequest(options, `加入书架`);
+
+    if (result.code == -19) {
+        console.log(`\n加入书架：${result.msg}`);
+        msg += `\n 加入书架：${result.msg}`;
+    } else if (result.code == 0) {
+        console.log(`\n加入书架：获得${result.data.count}金币`);
+        msg += `\n 加入书架：获得${result.data.count}金币`;
     }
 }
 
