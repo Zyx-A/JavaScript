@@ -1,6 +1,8 @@
 /**
  * 请勿烂分享脚本
- * 
+ 
+ * 脚本地址 https://raw.githubusercontent.com/kristallsi/JavaScript/main/QQread.js
+ 
  * 请填写我的邀请码 937240599 (你的支持就是我最大的动力)
  
  * QQ阅读app  
