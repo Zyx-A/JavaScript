@@ -1,13 +1,14 @@
 /**
  * 请勿烂分享脚本
- * 
+ * tg群 https://t.me/+JHc9YrZT1Iw0NDFl
+   频道 https://t.me/+l-JQvXtZeZU3MTk1
  * 请填写我的邀请码 937240599 (你的支持就是我最大的动力)
  
  * QQ阅读app  
  
  * 抓包任意url https://eventv3.reader.qq.com 里的cookie
  
- * cron 0 0 0/1 * * ? 至少1h以上一次 务必在早上9-10之间执行一次
+ * cron 0 0 0/1 * * ? 定时自己改 每天8-18点至少20次 务必在早上9-10之间执行一次
  
  * 7/3     初步完成签到 开宝箱 看广告等任务
  
@@ -18,7 +19,7 @@
 
 const $ = new Env("QQ阅读");
 const notify = $.isNode() ? require("./sendNotify") : "";
-const Notify = 0 		//0为关闭通知,1为打开通知,默认为1
+const Notify = 1 		//0为关闭通知,1为打开通知,默认为1
 const debug = 0 		//0为关闭调试,1为打开调试,默认为0
 ///////////////////////////////////////////////////////////////////
 let ckStr = process.env.qqreadCookie;
@@ -63,6 +64,10 @@ async function start() {
         await punchCardWatchVideo();
         console.log("\n ==============加入书架==============");
         await addBookShelfWatchVideo();
+        await $.wait(3 * 1000);
+        console.log("\n ==============阅读指定书籍==============");
+        await pickReadConfigBook();
+        await $.wait(60 * 1000);
         } else {
         console.log("\n 时间不对 跳过！")
         msg += `\n 时间不对 跳过！`;
@@ -92,11 +97,29 @@ async function start() {
         }
         
         console.log("\n ===========刷视频随机奖励===========");
-        console.log("\n 每运行一次刷一个 每天最多20次");
         await watchVideo();
+        
+        console.log("\n ===========资产统计===========");
+        await myPageInit();
     }
 
+async function myPageInit() {
+    let options = {
+        method: 'GET',
+        url: `${hostname}/activity/pkg11955/myPageInit`,
+        headers: {
+            Host: host,
+            'cookie': `${ck[0]}`
+        },
+      //  body: JSON.stringify({})
+    };
+    let result = await httpRequest(options, `资产统计`);
 
+    if (result.code == 0) {
+        console.log(`\n累计收益：${result.data.cashGet}\n现存余额：${result.data.cashBalance}\n今日金币：${result.data.coinBalance}`);
+        msg += `\n 累计收益：${result.data.cashGet}\n 现存余额：${result.data.cashBalance}\n 今日金币：${result.data.coinBalance}`;
+    }
+}
 /**
  * 新手红包    GET
  */
@@ -204,8 +227,10 @@ async function openBox() {
       //  body: JSON.stringify({})
     };
     let result = await httpRequest(options, `开宝箱`);
-
-    if (result.data.status == 3) {
+    if (result.data.status == 1) {
+        console.log(`\n开宝箱：今日已开完`);
+        msg += `\n 开宝箱：今日已开完`;
+    } else if (result.data.status == 3) {
         console.log(`\n开宝箱：${result.msg}`);
         msg += `\n 开宝箱：${result.msg}`;
     } else if (result.data.status == 0) {
@@ -300,6 +325,27 @@ async function addBookShelfWatchVideo() {
     } else if (result.code == 0) {
         console.log(`\n加入书架：获得${result.data.count}金币`);
         msg += `\n 加入书架：获得${result.data.count}金币`;
+    }
+}
+
+async function pickReadConfigBook() {
+    let options = {
+        method: 'GET',
+        url: `${hostname}/activity/pkg11955/pickReadConfigBook`,
+        headers: {
+            Host: host,
+            'cookie': `${ck[0]}`
+        },
+      //  body: JSON.stringify({})
+    };
+    let result = await httpRequest(options, `阅读指定书籍`);
+
+    if (result.code == -106) {
+        console.log(`\n阅读指定书：${result.msg}`);
+        msg += `\n 阅读指定书：${result.msg}`;
+    } else if (result.code == 0) {
+        console.log(`\n阅读指定书：获得${result.data.count}金币`);
+        msg += `\n 阅读指定书：获得${result.data.count}金币`;
     }
 }
 
