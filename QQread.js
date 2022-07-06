@@ -1,7 +1,6 @@
 /**
  * 请勿烂分享脚本
- * tg群 https://t.me/+JHc9YrZT1Iw0NDFl
-   频道 https://t.me/+l-JQvXtZeZU3MTk1
+ * 
  * 请填写我的邀请码 937240599 (你的支持就是我最大的动力)
  
  * QQ阅读app  
@@ -56,15 +55,18 @@ async function start() {
 
         console.log("\n ==============7日打卡==============");
         n = local_hours();
-        if (n >= 9 && n <= 10) {
+        if (n >= 8 && n <= 10) {
         await pickReadAwardV2();
+        await $.wait(10 * 1000);
         await sign(); 
-        await $.wait(3 * 1000);
+        await $.wait(10 * 1000);
         await pickLottery();
+        await $.wait(10 * 1000);
         await punchCardWatchVideo();
+        await $.wait(10 * 1000);
         console.log("\n ==============加入书架==============");
         await addBookShelfWatchVideo();
-        await $.wait(3 * 1000);
+        await $.wait(10 * 1000);
         console.log("\n ==============阅读指定书籍==============");
         await pickReadConfigBook();
         await $.wait(60 * 1000);
@@ -75,7 +77,7 @@ async function start() {
         
         console.log("\n ==============开宝箱==============");
         await openBox();
-        await $.wait(3 * 1000);
+        await $.wait(10 * 1000);
         await pickOpenBoxWatchVideo();
         
         console.log("\n ==============阅读奖励==============");
