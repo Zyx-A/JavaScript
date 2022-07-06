@@ -1,13 +1,15 @@
 /**
- * 请勿烂分享脚本
+  * 请勿烂分享脚本
   * 脚本地址 https://raw.githubusercontent.com/kristallsi/JavaScript/main/ks_ptb.js
- * 快手普通版 低保版(测试版)
- * cron 0 0/30 * * * ?    每天跑多少次自己定
+ * 快手普通版 低保版 (每天大概0.3)   自动提现时间改21行
+ * cron 0 0 8-20/2 * * ?  每天跑10次就够了 签到任务务必在8-9运行一次
  * 7\5      暂时只做签到 开宝箱 任务 (等以后有能力再加)
+ * 7\6      增加自动提现0.3
  
- * cookie 跟极速版通用 提取did=xx;token=xxxx;kuaishou.api_st=xxx
- 嫌麻烦的直接放完整cookie也可以
+ * cookie 跟极速版通用 抓kpn=KUAISHOU;完整cookie
  
+ * tg群 https://t.me/+JHc9YrZT1Iw0NDFl
+ *  频道 https://t.me/+l-JQvXtZeZU3MTk1
  * ========= 青龙--配置文件 =========
  * 变量格式: export ksptb_cookie="cookie@cookie"多个账号换行 或用 @ 分割
  *
@@ -17,12 +19,15 @@ const $ = new Env("快手普通版");
 const notify = $.isNode() ? require("./sendNotify") : "";
 const Notify = 1 		//0为关闭通知,1为打开通知,默认为1
 const debug = 0 		//0为关闭调试,1为打开调试,默认为0
+let time = "12";       //提现时间   默认12点
 ///////////////////////////////////////////////////////////////////
 let ckStr = process.env.ksptb_cookie;
 let msg = "";
 let ck = "";
 let host = "encourage.kuaishou.com";
 let hostname = "https://" + host;
+let num = "SIGN_INVALID_TIMESTAMP";
+
 
 async function tips(ckArr) {
 
@@ -33,6 +38,7 @@ async function tips(ckArr) {
 
 !(async () => {
     let ckArr = await getCks(ckStr, "ksptb_cookie");
+
     await tips(ckArr);
     for (let index = 0; index < ckArr.length; index++) {
         ks_num = index + 1;
@@ -57,7 +63,46 @@ async function start() {
         console.log("\n =========开宝箱=========");
         await info();
         
+        console.log("\n =========资产列表=========");
+        await basicInfo();
+        
+        n = local_hours();
+        if (n == `${time}`){
+        console.log("\n =========提现=========");
+        await apply();
+        }else {
+        console.log("\n =========提现=========");
+        console.log("\n 非设定的提现时间 跳过\n\n");
+        msg += `\n 非设定的提现时间 跳过`;
+        }
     }
+
+
+async function basicInfo() {
+    let options = {
+        method: 'POST',
+        url: `${hostname}/rest/wd/encourage/account/basicInfo`,
+        headers: {
+            'Host': host,
+            'content-type': 'application/json',
+            'Cookie': `${ck[0]}`
+        },
+        body: JSON.stringify({"taskToken":`${token}`})
+    };
+    let result = await httpRequest(options, `资产列表`);
+
+    if (result.result == 6002) {
+        console.log(`\n资产情况: ${result.error_msg}`);
+        msg += `\n 资产情况: ${result.error_msg}`;
+    } else if (result.data.rewardSuccess == false) {
+        console.log(`\n 资产情况: ${result.data.toast}`);
+        msg += `\n 资产情况: ${result.data.toast}`;
+    } else if (result.result == 1){
+        console.log(`\n 资产情况: 今日收入${result.data.coinAmount}金币\n 现金余额${result.data.cashAmountDisplay}元\n 历史累计${result.data.accumulativeAmountDisplay}元`);
+        msg += `\n 资产情况: 今日收入${result.data.coinAmount}金币\n 现金余额${result.data.cashAvailableDisplay}元\n 历史累计${result.data.accumulativeAmountDisplay}元`;
+    }
+}
+
 
 async function sign() {
     let options = {
@@ -73,13 +118,13 @@ async function sign() {
     let result = await httpRequest(options, `签到`);
 
     if (result.result == 109) {
-        console.log(`\n签到: ${result.error_msg}`);
+        console.log(`\n 签到: ${result.error_msg}`);
         msg += `\n 签到: ${result.error_msg}`;
     } else if (result.result == 100136) {
-        console.log(`\n签到: ${result.data.toast}`);
-        msg += `\n 签到: ${result.data.toast}`;
-    } else if (result.data.rewardSuccess == true){
-        console.log(`\n签到: 第${result.data.button.linkType}天获得${result.data.popup}`);
+        console.log(`\n 签到: ${result.error_msg}`);
+        msg += `\n 签到: ${result.error_msg}`;
+    } else if (result.rewardSuccess == true){
+        console.log(`\n 签到: 第${result.data.button.linkType}天获得${result.data.popup}`);
         msg += `\n 签到: 第${result.data.button.linkType}天获得${result.data.popup}`;
     }
 }
@@ -97,11 +142,14 @@ async function info() {
     };
     let result = await httpRequest(options, `获取开宝箱token`);
 
-    if (result.result == 109) {
-        console.log(`\n获取开宝箱token: ${result.error_msg}`);
+    if (result.result == 100164) {
+        console.log(`\n 获取开宝箱token: ${result.error_msg}`);
+        msg += `\n 获取开宝箱token: ${result.error_msg}`;
+    } else if (result.result == 109) {
+        console.log(`\n 获取开宝箱token: ${result.error_msg}`);
         msg += `\n 获取开宝箱token: ${result.error_msg}`;
     } else if (result.result == 1){
-        console.log(`\n获取开宝箱token：成功`);
+        console.log(`\n 获取开宝箱token：成功`);
         msg += `\n 获取开宝箱token：成功`;
         token = result.data.token
         await report();
@@ -122,15 +170,44 @@ async function report() {
     };
     let result = await httpRequest(options, `开宝箱`);
 
-    if (result.result == 6002) {
-        console.log(`\n开宝箱状态: ${result.error_msg}`);
-        msg += `\n 开宝箱状态: ${result.error_msg}`;
+    if (result.result == 1){
+        console.log(`\n 开宝箱：${result.data.toast}`);
+        msg += `\n 开宝箱：${result.data.toast}`;
+    } else if (result.result == 6002) {
+        console.log(`\n 开宝箱: ${result.error_msg}`);
+        msg += `\n 开宝箱: ${result.error_msg}`;
     } else if (result.data.rewardSuccess == false) {
-        console.log(`\n开宝箱状态: ${result.data.toast}`);
-        msg += `\n 开宝箱状态: ${result.data.toast}`;
-    } else if (result.data.rewardSuccess == 6){
-        console.log(`\n开宝箱状态: ${result.data.rewardCount}`);
-        msg += `\n 开宝箱状态: ${result.data.rewardCount}`;
+        console.log(`\n 开宝箱: ${result.data.toast}`);
+        msg += `\n 开宝箱: ${result.data.toast}`;
+    } else if (result.data.rewardSuccess == true){
+        console.log(`\n 开宝箱: 获得${result.data.rewardCount}金币${result.data.dialog.secondDesc}`);
+        msg += `\n 开宝箱: 获得${result.data.rewardCount}金币${result.data.dialog.secondDesc}`;
+    }
+}
+
+async function apply() {
+    let options = {
+        method: 'POST',
+        url: `https://www.kuaishoupay.com/pay/account/h5/withdraw/apply`,
+        headers: {
+            'Host': 'www.kuaishoupay.com',
+            'Content-Length': '766',
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Cookie': `${ck[0]}`
+        },
+        body: 'account_group_key=INCENTIVE_CASH&mobile_code=&fen=30&provider=WECHAT&total_fen=30&commission_fen=0&third_account=WECHAT&attach=&biz_content=%7B%22accountId%22%3A%222710211362%22%2C%22sign%22%3A%22SWg2SERxaFFVMkFIS0RXZzloYk5NWVlBUEJCMkV5Y0Q1NnRTbzk1bU5YVy9uNUZpeFVCYWFqM1UreGVCc3NuMmxxRjJaR2xZUS9iV0JhbGlwSHBJNlJCMGVTamxjbENjdEJUaWliUklWZGhQZHNTcnVOdlh1bXR0OUNJTjR2OURiNmZaYmxERFRSRG5ySUg2aiszM0M3RklBZmV0RzJtUktvWkZkZG5UalVvS1pyMnlQMkVSS1llTE5KdmNJekVPUllYZEhWRC9kcElpVHJ0clNmUnRrMnl5am12KzdHZjRnZlBvc0huMlJab1VBOUtJdHV5SzlzdU9ic1hLS2tORDlKMElnZVZoc0pkVUVZNVFGbXo2V3c3K0o3TTczVXY2N1kvWEtJY0xhRjI2WnN4K29VWUJucFB3REV1OFhTYVRBTS9FdC9ucmxmdzUxOWE1V0RqckVnPT0%3D%22%2C%22fen%22%3A%2230%22%2C%22timestamp%22%3A%221657038320195%22%7D&session_id=&bank_id=&pop_window_types='
+    };
+    let result = await httpRequest(options, `申请提现`);
+
+    if (result.result == -401) {
+        console.log(`\n 提现: ${result.error_msg}`);
+        msg += `\n 提现: ${result.error_msg}`;
+    }else if (result.code == num) {
+        console.log(`\n 提现: ${result.msg}`);
+        msg += `\n 提现: ${result.msg}`;
+    } else if (result.result == SUCCESS){
+        console.log(`\n 提现: ${result.msg}`);
+        msg += `\n 提现: ${result.msg}`;
     }
 }
 
