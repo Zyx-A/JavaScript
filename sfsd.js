@@ -129,8 +129,8 @@ async function start() {
         }
         if (browse1) {
         cd = `691`
-        taskid = `TASK20211021152450608942`
-        id = `1125AEDD23DA491C8D1486DE5805B807`
+        taskid = `TASK20211118152352423666`
+        id = `BA0414B8CA194502813E8B087B0AC1BA`
         console.log("\n =========邀请访问抽奖=========");
         msg += `\n =========邀请访问抽奖=========`;
         await $.wait(3 * 1000);
@@ -260,6 +260,8 @@ async function id1() {
     } else if (result.obj == false) {
         console.log(`\n今日已完成`);
         msg += `\n 今日已完成`;
+        await $.wait(3 * 1000);
+        await receive();
     } else if(result.obj == true) {
         console.log(`\n模拟浏览成功`);
         msg += `\n 模拟浏览成功`;
