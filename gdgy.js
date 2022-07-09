@@ -4,7 +4,7 @@
  * 变量格式: export gdgy_Cookie='token@token'  多个账号用 换行 或 @分割
  * 
  */
-const $ = new Env("都市牧场");
+const $ = new Env("高德果园");
 const notify = $.isNode() ? require("./sendNotify") : "";
 const Notify = 1 		//0为关闭通知,1为打开通知,默认为1
 const debug = 1			//0为关闭调试,1为打开调试,默认为0
@@ -18,7 +18,7 @@ let ck_status = "";
 ///////////////////////////////////////////////////////////////////
 let VersionCheck = "1.0.0"
 let Version_latest = "1.0.1"
-let Change = '增加任务'
+let Change = "测试远程"
 let thank = `\n 感谢 群友投稿 \n`
 ///////////////////////////////////////////////////////////////////
 
