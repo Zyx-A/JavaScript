@@ -4,7 +4,7 @@
  * 变量格式: export gdgy_Cookie='token@token'  多个账号用 换行 或 @分割
  * 
  */
-const $ = new Env("都市牧场");
+const $ = new Env("高德果园");
 const notify = $.isNode() ? require("./sendNotify") : "";
 const Notify = 1 		//0为关闭通知,1为打开通知,默认为1
 const debug = 1			//0为关闭调试,1为打开调试,默认为0
@@ -18,23 +18,15 @@ let ck_status = "";
 ///////////////////////////////////////////////////////////////////
 let VersionCheck = "1"
 let Version_latest = "2"
-let Change = ''
+let Change = "增加任务"
 let thank = `\n 感谢 群友投稿 \n`
 ///////////////////////////////////////////////////////////////////
 
 async function tips(ckArr) {
-	/*
 	let Version_latest = await Version_Check('gdgy');
-	let Version = `\n📌 本地脚本: V 1.0.0  远程仓库脚本: V ${Version_latest}`
+	let Version = `\n📌 本地脚本: V ${VersionCheck}  远程仓库脚本: V ${Version_latest}`
 	DoubleLog(`${Version}\n\n📌 🆙 更新内容: ${Change}`);
 	DoubleLog(`${thank}`);
-	*/
-	let Version_latest = await Version_Check('gdgy');
-    let Version = `\n📌 本地脚本: ${VersionCheck}  远程仓库脚本: V ${Version_latest}`
-    console.log(`${Version}`);
-    msg += `\n${Version}`
-    console.log(`📌 🆙 更新内容: ${Change}\n`);
-    msg += `\n${Change}`
 
 	DoubleLog(`\n========== 共找到 ${ckArr.length} 个账号 ==========`);
 	debugLog(`【debug】 这是你的账号数组:\n ${ckArr}`);
