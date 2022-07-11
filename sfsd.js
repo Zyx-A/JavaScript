@@ -72,6 +72,7 @@ async function start() {
         id = `6BCCA692CB51485D96D709582EDB4AB2`
         console.log("\n =========探索超值福利=========");
         msg += `\n =========探索超值福利=========`;
+        await $.wait(20 * 1000);
         await id1();
         }
         if (browse) {
@@ -112,8 +113,8 @@ async function start() {
         
         console.log("\n\n =========开始 每月任务=========");
         msg += `\n =========开始 每月任务=========`;
-        console.log("\n 暂时没有任务 等待更新");
-        msg += `\n 暂时没有任务 等待更新`;
+        await $.wait(15 * 1000);
+        await receive();
         
         if (sfsd_num >= 1){
         console.log("\n =========开始 内部互助=========");
@@ -124,7 +125,7 @@ async function start() {
         id = `E4FEA100E504426FBC5FF85CB62507DE`
         console.log("\n =========邀请访问签到=========");
         msg += `\n =========邀请访问签到=========`;
-        await $.wait(3 * 1000);
+        await $.wait(15 * 1000);
         await TaskNotice();
         }
         if (browse1) {
@@ -133,7 +134,7 @@ async function start() {
         id = `BA0414B8CA194502813E8B087B0AC1BA`
         console.log("\n =========邀请访问抽奖=========");
         msg += `\n =========邀请访问抽奖=========`;
-        await $.wait(3 * 1000);
+        await $.wait(15 * 1000);
         await TaskNotice();
         }
         if (browse1) {
@@ -142,7 +143,7 @@ async function start() {
         id = `8F36C102BF044334B1AE984ACE86A386`
         console.log("\n =========邀请访问夺宝=========");
         msg += `\n =========邀请访问夺宝=========`;
-        await $.wait(3 * 1000);
+        await $.wait(15 * 1000);
         await TaskNotice();
         }
         if (browse1) {
@@ -151,7 +152,7 @@ async function start() {
         id = `1221AFD558724EF7A3A010C9FF28B0D4`
         console.log("\n =========邀请访问秒杀=========");
         msg += `\n =========邀请访问秒杀=========`;
-        await $.wait(3 * 1000);
+        await $.wait(15 * 1000);
         await TaskNotice();
         }
         
@@ -165,7 +166,7 @@ async function start() {
 async function balance() {
     let options = {
         method: 'POST',
-        url: `${hostname}/mcs-mimp/member/points/balance`,
+        url: `${hostname}/mcs-mimp/member/personalInfo`,
         headers: {
             Host: host,
             'content-type': 'application/json;charset=UTF-8',
@@ -179,8 +180,8 @@ async function balance() {
         console.log(`\n ${result.errorMessage}`);
         msg += `\n ${result.errorMessage}`;
     }  else if(result.success == true) {
-        console.log(`\n剩余${result.obj.availablePoints}积分\n`);
-        msg += `\n 剩余${result.obj.availablePoints}积分`;
+        console.log(`\n用户${result.obj.mobile}\n${result.obj.levelName}\n剩余${result.obj.availablePoints}积分\n`);
+        msg += `\n 用户${result.obj.mobile}\n${result.obj.levelName}\n剩余${result.obj.availablePoints}积分`;
     }
 }
 
@@ -206,11 +207,13 @@ async function TaskNotice() {
     } else if (result.success == false) {
         console.log(`\n邀请：${result.errorMessage}`);
         msg += `\n 邀请：${result.errorMessage}`;
-        await $.wait(6 * 1000);
+        await $.wait(20 * 1000);
         await receive1();
     } else if(result.success == true) {
         console.log(`\n邀请：助力成功`);
         msg += `\n 邀请：助力成功`;
+        await $.wait(20 * 1000);
+        await receive1();
     } else {
     return browse1 = false;
     }
@@ -260,11 +263,13 @@ async function id1() {
     } else if (result.obj == false) {
         console.log(`\n今日已完成`);
         msg += `\n 今日已完成`;
-        await $.wait(3 * 1000);
+        await $.wait(20 * 1000);
         await receive();
     } else if(result.obj == true) {
         console.log(`\n模拟浏览成功`);
         msg += `\n 模拟浏览成功`;
+        await $.wait(20 * 1000);
+        await receive();
     }
 }
 
@@ -328,23 +333,24 @@ async function sign() {
             'content-type': 'application/json;charset=UTF-8',
             'cookie': `${ck[0]}`
         },
-        body: JSON.stringify({"comeFrom":"vioin","channelFrom":"MINI_PROGRAM"})
+        body: JSON.stringify({"strategyId":14,"taskId":"TASK20211021135739329023","taskCode":"BF21CB6C1540463DBD4B1B86F1C0D9DC"})
     };
-    let result = await httpRequest(options, `签到`);
+    let result = await httpRequest(options, `连续签到签到`);
 
     if(result.errorCode == 100111) {
         console.log(`\n ${result.errorMessage}`);
         msg += `\n ${result.errorMessage}`;
     } else if (result.obj.hasFinishSign == 1) {
-        console.log(`\n签到：今日已签到过了`);
-        msg += `\n 签到：今日已签到过了`;
+        console.log(`\n连续签到奖励：今日已完成`);
+        msg += `\n 连续签到奖励：今日已完成`;
     } else if(result.obj.hasFinishSign == 0) {
-        console.log(`\n签到：第${result.obj.countDay}天成功`);
-        msg += `\n 签到：第${result.obj.countDay}天成功`;
+        console.log(`\n连续签到：您已连续签到${result.obj.countDay}天获得${result.obj.integralTaskSignPackageVOList[0].signPopupTitle}`);
+        msg += `\n 连续签到：您已连续签到${result.obj.countDay}天获得${result.obj.integralTaskSignPackageVOList[0].signPopupTitle}`;
     } else {
     return browse = false;
     }
 }
+
 // #region *************************************************************  固定代码  *************************************************************
 /**
  * 变量检查
