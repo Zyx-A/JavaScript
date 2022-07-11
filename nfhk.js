@@ -1,17 +1,15 @@
 /**
  * 南方航空    vx小程序
  * 攒足购可以在app端兑换实物
- * 抓https://wxapi.csair.com/marketing-tools/ 下的完整cookie(仅支持青龙)
+ * 抓https://wxapi.csair.com/marketing-tools/ 下的sessionid(签到界面可得)
  * cron   自己定 每天一次就够了
  * 脚本地址 https://raw.githubusercontent.com/kristallsi/JavaScript/main/nfhk.js
  * ========= 青龙--配置文件 =========
  * 变量格式: export nfhk_Cookie='cookie@cookie'  多个账号用 换行 或 @分割
- * tg群 https://t.me/+JHc9YrZT1Iw0NDFl
- * 频道 https://t.me/+l-JQvXtZeZU3MTk1
  */
 ///////////////////////////////////////////////////////////////////
-let VersionCheck = "1.0.0"
-let Change = "初步完成签到任务"
+let VersionCheck = "1.2.0"
+let Change = "添加抽奖任务、测试公告"
 let thank = `\n 感谢 群友投稿 \n`
 const $ = new Env("南方航空");
 ///////////////////////////////////////////////////////////////////
@@ -22,16 +20,17 @@ const debug = 1			//0为关闭调试,1为打开调试,默认为0
 let ckStr = process.env.nfhk_Cookie;
 let msg = "";
 let ck = "";
-let host = "wxapi.csair.com";
-let hostname = "https://" + host;
-let name = "S2001";
+let name = "S00011";
+let name1 = "S2001";
+let name2 = "W45001";
+let name3 = "W200";
 
 ///////////////////////////////////////////////////////////////////
 async function tips(ckArr) {
 
 	let Version_latest = await Version_Check('nfhk');
     let Change = await Version_Check1('nfhk');
-    let Version = `\n📌 本地脚本: V 1.0.0  远程仓库脚本: V ${Version_latest}`
+    let Version = `\n📌 本地脚本: V 1.2.0  远程仓库脚本: V ${Version_latest}`
     DoubleLog(`${Version}\n📌 更新内容: ${Change}`);
 	DoubleLog(`\n========== 共找到 ${ckArr.length} 个账号 ==========`);
 	debugLog(`【debug】 这是你的账号数组:\n ${ckArr}`);
@@ -57,13 +56,15 @@ async function tips(ckArr) {
 async function start() {
 
             
-            console.log(`\n==========  开始 签到  ==========\n`);
+            console.log(`\n==========  开始 今日任务  ==========\n`);
+
             await sign();
             
 
 	
 }
-//打卡赢水滴
+
+//签到
 async function sign() {
 	let Option = {
 		url: `https://wxapi.csair.com/marketing-tools/activity/join?type=APPTYPE&chanel=ss&lang=zh`,
@@ -81,17 +82,19 @@ async function sign() {
 	};
 	let result = await httpPost(Option, `签到`);
 
-	if (result.respCode == name) {
+	if (result.respCode == name1) {
+		DoubleLog(`\n每日签到：${result.respMsg}`);
+	} else if (result.respCode == name) {
 		DoubleLog(`\n每日签到：${result.respMsg}`);
 	} else if (result.respCode == 0000) {
-		DoubleLog(`\n每日签到：${result.respMsg}`);
+		DoubleLog(`\n每日签到：${result.data.result}`);
 	} else if (result.respCode == null){
 		DoubleLog(`\n签到失败原因未知 尝试重新签到`);
+		await wait(10);
 		await sign();
 		console.log(result);
 	}
 }
-
 
 //下面是获取远程公告更新介意可以删掉
 
