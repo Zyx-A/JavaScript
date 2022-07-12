@@ -8,6 +8,7 @@
  
  
  * 7/5     初步完成签到 几个浏览任务
+ * 7/11    已修复所有问题
  * cron 0 0 8 * * ? 定时自己改 每天一次
  
  * 抓包任意url https://mcs-mimp-web.sf-express.com/mcs-mimp/ 里的cookie只需要 sessionId=xxxxxxxxx这条
