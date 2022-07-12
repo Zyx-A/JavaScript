@@ -67,7 +67,7 @@ async function start() {
             
             console.log(`\n==========  开始 签到  ==========\n`);
             await sign();
-            console.log(`\n==========  开始 签到  ==========\n`);
+            console.log(`\n==========  开始 抽奖  ==========\n`);
             await draw();
             
 
