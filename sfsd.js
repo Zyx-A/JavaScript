@@ -6,14 +6,13 @@
  
  * 感谢群友支持及测试
  
- 
  * 7/5     初步完成签到 几个浏览任务
  * 7/11    已修复所有问题
  * cron 0 0 8 * * ? 定时自己改 每天一次
  
  * 抓包任意url https://mcs-mimp-web.sf-express.com/mcs-mimp/ 里的cookie只需要 sessionId=xxxxxxxxx这条
  
- * 增加账号互助功能
+ * 增加账号互助功能(必须两个号)
  * 分享邀请链接到微信 访问微信分享的链接 抓取https://mcs-mimp-web.sf-express.com/mcs-mimp/commonPost/~memberNonactivity~integralTaskStrategyService~inviteTaskNotice
  提取 请求体body里的 inviteUserId 例如{"inviteUserId":"TFpKOVdIc1Q4K2ZyUFZ6eGlIbEJ4Ykg0QXVES09Id3VjRzlWUm9iR2kxc2ZLTVhrdGFiSllWa2daaGpOaUdkQQ==","sceneCode":"647"}
  
